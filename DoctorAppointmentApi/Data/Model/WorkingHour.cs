@@ -1,4 +1,4 @@
-﻿namespace DoctorAppointmentApi.Controllers.Data.Model
+﻿namespace DoctorAppointmentApi.Data.Model
 {
     public class WorkingHour
     {

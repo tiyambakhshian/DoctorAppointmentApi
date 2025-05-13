@@ -1,8 +1,7 @@
-﻿using DoctorAppointmentApi.Controllers.Data.Model;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using DoctorAppointmentApi.Data.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Refhub_Ir.Data
+namespace DoctorAppointmentApi.DB.Model
 {
     public class AppDbContext : DbContext
     {

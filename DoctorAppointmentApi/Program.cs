@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Refhub_Ir.Data;
+using DoctorAppointmentApi.DB.Model;
 
 namespace DoctorAppointmentApi
 {

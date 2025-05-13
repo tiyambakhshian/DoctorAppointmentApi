@@ -1,4 +1,4 @@
-﻿using DoctorAppointmentApi.Controllers.Data.Model;
+﻿using DoctorAppointmentApi.Data.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
