@@ -1,6 +1,16 @@
-﻿
+﻿using DoctorAppointmentApi.Data.JWTModel;
 using Microsoft.EntityFrameworkCore;
 using DoctorAppointmentApi.DB.Model;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using DoctorAppointmentApi.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+
 
 namespace DoctorAppointmentApi
 {
@@ -19,6 +29,67 @@ namespace DoctorAppointmentApi
             #region  Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            #endregion
+            
+            builder.Services.AddSwaggerGen(c =>
+            {
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "برای ورود، مقدار 'Bearer YOUR_TOKEN' را وارد کنید."
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+
+            });
+            
+            #region Config JWT
+            var key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {  
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            #endregion
+            
+            #region AddIdentity
+
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+
+            builder.Services.AddScoped<RoleManager<ApplicationRole>>();
+            builder.Services.AddScoped<JWTService>();
             #endregion
 
             // Add services to the container.
@@ -48,7 +119,15 @@ namespace DoctorAppointmentApi
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+            
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
             app.UseAuthorization();
 
