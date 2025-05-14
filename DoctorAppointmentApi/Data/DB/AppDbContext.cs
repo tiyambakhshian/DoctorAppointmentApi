@@ -1,9 +1,11 @@
-﻿using DoctorAppointmentApi.Data.Model;
+﻿using DoctorAppointmentApi.Data.JWTModel;
+using DoctorAppointmentApi.Data.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DoctorAppointmentApi.DB.Model
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
